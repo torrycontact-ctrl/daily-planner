@@ -731,6 +731,10 @@ function SportContent() {
   const { sportTasks, toggleTask, openTask, reorderTasks } =
     useContext(TasksContext);
   const fireConfetti = useConfetti();
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 6 } }),
+  );
   const tasks = [...sportTasks].sort((a, b) => Number(a.done) - Number(b.done));
 
   const runningOn = settings["Running"] ?? true;
@@ -742,7 +746,6 @@ function SportContent() {
       ? tasks.filter((t) => todayIds.includes(t.id))
       : tasks;
 
-  // Filter out running tasks when Running is off
   const visible = runningOn ? allVisible : allVisible.filter((t) => !t.miles);
 
   const allVisibleDone = visible.length > 0 && visible.every((t) => t.done);
@@ -752,56 +755,46 @@ function SportContent() {
     prevVisibleDone.current = allVisibleDone;
   }, [allVisibleDone]);
 
+  if (visible.length === 0) {
+    return (
+      <p className="text-[13px] text-black/30 text-center py-4">
+        No training today 🌿
+      </p>
+    );
+  }
+
   return (
-    <>
-      <div className="flex flex-col gap-3">
-        {visible.length === 0 ? (
-          <p className="text-[13px] text-black/30 text-center py-4">
-            No training today 🌿
-          </p>
-        ) : (
-          (() => {
-            const sportSensors = [
-              useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
-              useSensor(TouchSensor, {
-                activationConstraint: { delay: 150, tolerance: 6 },
-              }),
-            ];
-            return (
-              <DndContext
-                sensors={sportSensors}
-                collisionDetection={closestCenter}
-                onDragEnd={(e) => {
-                  if (e.over && e.active.id !== e.over.id) {
-                    const ids = visible.map((t) => t.id);
-                    reorderTasks(
-                      "sport",
-                      ids.indexOf(e.active.id as string),
-                      ids.indexOf(e.over.id as string),
-                    );
-                  }
-                }}
-              >
-                <SortableContext
-                  items={visible.map((t) => t.id)}
-                  strategy={rectSortingStrategy}
-                >
-                  {visible.map((task, i) => (
-                    <TaskRow
-                      key={task.id}
-                      task={task}
-                      last={i === visible.length - 1}
-                      onToggle={(id) => toggleTask("sport", id)}
-                      onOpen={(t) => openTask(t, "sport")}
-                    />
-                  ))}
-                </SortableContext>
-              </DndContext>
-            );
-          })()
-        )}
-      </div>
-    </>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={(e) => {
+        if (e.over && e.active.id !== e.over.id) {
+          const ids = visible.map((t) => t.id);
+          reorderTasks(
+            "sport",
+            ids.indexOf(e.active.id as string),
+            ids.indexOf(e.over.id as string),
+          );
+        }
+      }}
+    >
+      <SortableContext
+        items={visible.map((t) => t.id)}
+        strategy={rectSortingStrategy}
+      >
+        <div className="flex flex-col gap-3">
+          {visible.map((task, i) => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              last={i === visible.length - 1}
+              onToggle={(id) => toggleTask("sport", id)}
+              onOpen={(t) => openTask(t, "sport")}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }
 
