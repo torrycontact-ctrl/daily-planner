@@ -161,12 +161,12 @@ Based directly on lu.ma's Calendars page screenshot. The background is a flat, c
 ```css
 /* EXACT match to Luma */
 body {
-  background-color: #F2F3F5;
+  background-color: #f2f3f5;
 }
 
 /* Optional: barely perceptible gradient for subtle depth */
 body {
-  background: linear-gradient(180deg, #F0F1F4 0%, #F3F4F6 100%);
+  background: linear-gradient(180deg, #f0f1f4 0%, #f3f4f6 100%);
 }
 ```
 
@@ -177,40 +177,46 @@ Do NOT use dark gradients, purple tints, or heavy mesh gradients. The background
 ```typescript
 const colors = {
   // Canvas
-  canvas:         '#F2F3F5',        // Luma bg — cool flat gray
-  surface:        '#FFFFFF',        // Cards
-  surfaceHover:   '#FAFBFC',        // Subtle hover
-  
+  canvas: "#F2F3F5", // Luma bg — cool flat gray
+  surface: "#FFFFFF", // Cards
+  surfaceHover: "#FAFBFC", // Subtle hover
+
   // Borders (Luma uses very thin, light borders)
-  borderCard:     '#E8E9EB',        // Card outlines
-  borderSubtle:   '#F0F0F2',        // Task dividers inside cards
-  borderInput:    '#DCDEE2',        // Form inputs
-  
+  borderCard: "#E8E9EB", // Card outlines
+  borderSubtle: "#F0F0F2", // Task dividers inside cards
+  borderInput: "#DCDEE2", // Form inputs
+
   // Text
-  textPrimary:    '#1A1B1E',        // Headings
-  textSecondary:  '#3D3E42',        // Body
-  textMuted:      '#8C8F96',        // Labels, metadata
-  textDisabled:   '#C5C7CC',        // Placeholders, empty states
-  
+  textPrimary: "#1A1B1E", // Headings
+  textSecondary: "#3D3E42", // Body
+  textMuted: "#8C8F96", // Labels, metadata
+  textDisabled: "#C5C7CC", // Placeholders, empty states
+
   // Category Accents
   personal: {
-    accent:  '#E69500',   bg: '#FFFCF0',   border: '#FDE68A',
+    accent: "#E69500",
+    bg: "#FFFCF0",
+    border: "#FDE68A",
   },
   work: {
-    accent:  '#4F46E5',   bg: '#F5F3FF',   border: '#C7D2FE',
+    accent: "#4F46E5",
+    bg: "#F5F3FF",
+    border: "#C7D2FE",
   },
   sport: {
-    accent:  '#059669',   bg: '#F0FDF9',   border: '#A7F3D0',
+    accent: "#059669",
+    bg: "#F0FDF9",
+    border: "#A7F3D0",
   },
-  
+
   // Priority
-  high:    { color: '#DC2626', bg: '#FEF2F2' },
-  medium:  { color: '#D97706', bg: '#FFFBEB' },
-  low:     { color: '#9CA3AF', bg: '#F9FAFB' },
-  
+  high: { color: "#DC2626", bg: "#FEF2F2" },
+  medium: { color: "#D97706", bg: "#FFFBEB" },
+  low: { color: "#9CA3AF", bg: "#F9FAFB" },
+
   // UI
-  black:      '#1A1B1E',       // FAB, today pill
-  success:    '#10B981',       // Checkmarks
+  black: "#1A1B1E", // FAB, today pill
+  success: "#10B981", // Checkmarks
 };
 ```
 
@@ -223,7 +229,7 @@ Weights:  400 (body) · 500 (tasks) · 600 (labels/buttons) · 700 (headings) ·
 Scale:
   9px   — micro labels
   10px  — uppercase captions, metadata
-  11px  — sub-labels, task counts  
+  11px  — sub-labels, task counts
   12px  — buttons, badges, base body
   13px  — task titles, email subjects
   14px  — card headings
@@ -236,7 +242,7 @@ Scale:
 ```
 6px   — badges, pills
 8px   — inputs, priority buttons
-10px  — day pills, nav buttons  
+10px  — day pills, nav buttons
 12px  — header buttons
 16px  — FAB
 18px  — all bento cards
@@ -318,18 +324,18 @@ SPORT
 interface Task {
   id: string;
   user_id: string;
-  category: 'personal' | 'work' | 'sport';
+  category: "personal" | "work" | "sport";
   subtype: string;
   title: string;
   note?: string;
   priority: 1 | 2 | 3;
-  deadline?: string;             // ISO datetime
-  date: string;                  // YYYY-MM-DD
+  deadline?: string; // ISO datetime
+  date: string; // YYYY-MM-DD
   done: boolean;
   done_at?: string;
-  sort_order: number;            // For drag reorder
-  distance_km?: number;          // Run tasks only
-  calendar_event_id?: string;    // Google Calendar link
+  sort_order: number; // For drag reorder
+  distance_km?: number; // Run tasks only
+  calendar_event_id?: string; // Google Calendar link
   created_at: string;
 }
 ```
@@ -340,15 +346,19 @@ interface Task {
 function urgencyScore(task: Task): number {
   // RULE: Completed tasks ALWAYS at bottom
   if (task.done) return -1;
-  
+
   let score = (task.priority || 1) * 10;
   if (task.deadline) {
     const ms = new Date(task.deadline).getTime() - Date.now();
-    if (ms < 0)              score += 10000;   // Overdue
-    else if (ms < 3_600_000) score += 5000;    // < 1 hour
-    else if (ms < 14_400_000) score += 2000;   // < 4 hours
-    else if (ms < 86_400_000) score += 500;    // < 24 hours
-    else                     score += 100;
+    if (ms < 0)
+      score += 10000; // Overdue
+    else if (ms < 3_600_000)
+      score += 5000; // < 1 hour
+    else if (ms < 14_400_000)
+      score += 2000; // < 4 hours
+    else if (ms < 86_400_000)
+      score += 500; // < 24 hours
+    else score += 100;
   }
   return score;
 }
@@ -380,7 +390,7 @@ function urgencyScore(task: Task): number {
 - All recurring/scheduled items come FROM Google Calendar
 - Dashboard fetches events → auto-categorizes → shows as checkable tasks
 - Victoria adds her schedule to Google Calendar:
-  - Tuesday: "Easy Run" 
+  - Tuesday: "Easy Run"
   - Wednesday: "Tempo Run", "Intervals"
   - Gym sessions, meetings, appointments — all in Calendar
 - Dashboard keyword-matches events into correct bento cards
@@ -403,7 +413,7 @@ function urgencyScore(task: Task): number {
 - Drag UP = higher priority, drag DOWN = lower
 - Priority badge auto-updates based on position:
   - Top third → High
-  - Middle third → Med  
+  - Middle third → Med
   - Bottom third → Low
 - `sort_order` saved to database
 - Completed tasks at bottom are NOT draggable
@@ -412,9 +422,11 @@ function urgencyScore(task: Task): number {
 ### Rule 5: Sport Tracking
 
 **Gym:** Progress ring shows sessions completed / 3 weekly goal
+
 - Ring: `2/3` center text → when 3/3 shows ✓ checkmark
 
 **Run:** Progress ring shows TOTAL KILOMETERS this week
+
 - Ring: `18.5 km` center text
 - Fills based on configurable weekly km goal (default 30km from `profiles.weekly_run_goal_km`)
 - When completing a run task, detail panel prompts for distance
@@ -422,6 +434,7 @@ function urgencyScore(task: Task): number {
 - Weekly total = sum of all done run tasks this week
 
 **Display in Sport card header area:**
+
 ```
      (Gym 2/3)         (Run 18.5 km)
     [ring icon]        [ring icon]
@@ -508,6 +521,7 @@ function urgencyScore(task: Task): number {
 ```
 
 **Interactions:**
+
 - `≡` = drag handle (hover-only)
 - `☐` = checkbox click → complete
 - Click task text → detail panel slides from right
@@ -515,6 +529,7 @@ function urgencyScore(task: Task): number {
 - Cards are draggable to reorder (drag from card header)
 
 ### Week View
+
 - `‹ Mar 24 — Mar 30 ›` navigation
 - 7 horizontal day pills (today = dark bg)
 - Same 3 bento cards showing all tasks for visible week
@@ -522,6 +537,7 @@ function urgencyScore(task: Task): number {
 - Tasks checkable and draggable
 
 ### Month View
+
 - `‹ March 2026 ›` navigation
 - 7-column grid (Mon–Sun)
 - Today = dark bg, white text
@@ -542,12 +558,12 @@ Children:
   1. Drag handle  — 6-dot grip (⋮⋮), 14px, #C5C7CC
                     ONLY visible on hover
                     cursor: grab
-                    
+
   2. Checkbox     — 20px circle, dedicated click zone (28px hit area)
                     Unchecked: Circle stroke #D0D2D6, strokeWidth 1.5
                     Checked: filled circle + Check icon, category accent color
                     onClick: toggle done state
-                    
+
   3. Content area — flex column (ENTIRE row is clickable → opens detail panel)
                     Row 1: emoji + title + optional note (muted)
                     Row 2: badges (priority pill, deadline pill, time pill)
@@ -614,18 +630,18 @@ Sections:
   1. HEADER — category bg tint
      Left: emoji (20px) + label (14px/700) + task count (10px/muted)
      Right: [+] button (30px circle, accent bg, white + icon)
-     
+
   2. SPORT ONLY — progress rings row
      Centered, gap-24
      Gym ring: sessions X/3
      Run ring: XX.X km
      Border-bottom: category border
-     
+
   3. TASK LIST — scrollable, max-height 400px
      Sort: calendar events (by time) → active tasks (by urgency) → divider → done tasks
      Each item: TaskItem component
      Divider between active/done: dashed line, 1px, #E8E9EB
-     
+
   4. EMPTY STATE — if zero tasks AND zero calendar events:
      Single centered button: [+ Add task]
      No illustrations, no messages
@@ -675,7 +691,7 @@ Header area (bg #FAFBFC):
   Left: mail icon in indigo-tinted square (28px, rounded-8)
   Text: "Priority Inbox" (14px/700) + "X unread" (10px/muted)
 Body: top 5 emails, each:
-  Blue dot (6px) + sender name (12px/600) 
+  Blue dot (6px) + sender name (12px/600)
   Subject line (12px/500, #3D3E42)
   Snippet (11px, #8C8F96)
 Loading: 3 shimmer rows
@@ -704,23 +720,27 @@ Sections:
 ## 9. API Routes
 
 ### GET `/api/calendar`
+
 - Fetches today's events from ALL 3 Google accounts
 - Merges, deduplicates by event ID
 - Auto-categorizes each event (see Section 10)
 - Returns `{ events: CalendarEvent[] }`
 - Cache: 5 minutes
 
-### GET `/api/emails`  
+### GET `/api/emails`
+
 - Fetches top 5 important unread from Gmail
 - Returns `{ emails: { from, subject, snippet, date }[] }`
 - Cache: 10 minutes
 
 ### GET `/api/weather`
+
 - OpenWeatherMap current weather, Kraków
 - Returns `{ temp, condition, humidity, wind }`
 - Cache: 30 minutes
 
 ### POST `/api/summary`
+
 - Input: `{ taskCount, highPriority, meetings, sportPlan, events, doneCount, weather }`
 - Calls Claude with personalized prompt
 - Returns `{ text: string }`
@@ -734,45 +754,68 @@ Sections:
 
 ```typescript
 const SPORT_KEYWORDS = [
-  'run', 'easy run', 'long run', 'tempo', 'interval', 'intervals',
-  'gym', 'lower body', 'upper body', 'full body',
-  'workout', 'training', 'exercise'
+  "run",
+  "easy run",
+  "long run",
+  "tempo",
+  "interval",
+  "intervals",
+  "gym",
+  "lower body",
+  "upper body",
+  "full body",
+  "workout",
+  "training",
+  "exercise",
 ];
 
 const WORK_KEYWORDS = [
-  'meeting', 'standup', 'call', 'review', 'sync',
-  'sprint', 'retro', 'planning', 'demo', 'interview',
-  'presentation', 'workshop', '1:1', 'one on one'
+  "meeting",
+  "standup",
+  "call",
+  "review",
+  "sync",
+  "sprint",
+  "retro",
+  "planning",
+  "demo",
+  "interview",
+  "presentation",
+  "workshop",
+  "1:1",
+  "one on one",
 ];
 
-function categorizeEvent(title: string): 'personal' | 'work' | 'sport' {
+function categorizeEvent(title: string): "personal" | "work" | "sport" {
   const t = title.toLowerCase();
-  if (SPORT_KEYWORDS.some(k => t.includes(k))) return 'sport';
-  if (WORK_KEYWORDS.some(k => t.includes(k))) return 'work';
-  return 'personal';
+  if (SPORT_KEYWORDS.some((k) => t.includes(k))) return "sport";
+  if (WORK_KEYWORDS.some((k) => t.includes(k))) return "work";
+  return "personal";
 }
 
 function inferSubtype(title: string, category: string): string {
   const t = title.toLowerCase();
-  if (category === 'sport') {
-    if (t.includes('easy'))               return 'run_easy';
-    if (t.includes('long run'))           return 'run_long';
-    if (t.includes('tempo') || t.includes('interval')) return 'run_tempo';
-    if (t.includes('lower'))              return 'gym_lower';
-    if (t.includes('upper'))              return 'gym_upper';
-    if (t.includes('full body'))          return 'gym_full';
-    if (t.includes('run'))                return 'run_easy';
-    if (t.includes('gym'))                return 'gym_full';
+  if (category === "sport") {
+    if (t.includes("easy")) return "run_easy";
+    if (t.includes("long run")) return "run_long";
+    if (t.includes("tempo") || t.includes("interval")) return "run_tempo";
+    if (t.includes("lower")) return "gym_lower";
+    if (t.includes("upper")) return "gym_upper";
+    if (t.includes("full body")) return "gym_full";
+    if (t.includes("run")) return "run_easy";
+    if (t.includes("gym")) return "gym_full";
   }
-  if (category === 'work') {
-    if (t.includes('meeting') || t.includes('call') || t.includes('sync')) return 'meeting';
-    return 'task';
+  if (category === "work") {
+    if (t.includes("meeting") || t.includes("call") || t.includes("sync"))
+      return "meeting";
+    return "task";
   }
-  return 'task';
+  return "task";
 }
 ```
 
 ### Sync Flow
+
 1. On dashboard load → GET `/api/calendar`
 2. For each event, check if `calendar_event_id` already exists in tasks table
 3. If new → create task row with `calendar_event_id` set
@@ -780,12 +823,14 @@ function inferSubtype(title: string, category: string): string {
 5. If event deleted from Calendar → leave task but clear `calendar_event_id`
 
 ### Victoria's Predefined Weekly Sport Schedule (via Google Calendar)
+
 ```
 Tuesday:    "Easy Run"              → sport / run_easy
-Wednesday:  "Tempo Run"             → sport / run_tempo  
+Wednesday:  "Tempo Run"             → sport / run_tempo
 Wednesday:  "Intervals"             → sport / run_tempo
 (+ Gym sessions as scheduled)
 ```
+
 These are Google Calendar recurring events. The dashboard just reads them.
 
 ---
@@ -793,6 +838,7 @@ These are Google Calendar recurring events. The dashboard just reads them.
 ## 11. Animations (Framer Motion)
 
 ### Task completion — sink to bottom
+
 ```typescript
 // Use Framer Motion layoutId + AnimatePresence
 // When task.done changes to true:
@@ -808,6 +854,7 @@ These are Google Calendar recurring events. The dashboard just reads them.
 ```
 
 ### Detail panel — slide in
+
 ```typescript
 <AnimatePresence>
   {selectedTask && (
@@ -829,6 +876,7 @@ These are Google Calendar recurring events. The dashboard just reads them.
 ```
 
 ### Task enter — fade up
+
 ```css
 initial={{ opacity: 0, y: 6 }}
 animate={{ opacity: 1, y: 0 }}
@@ -836,12 +884,14 @@ transition={{ duration: 0.25 }}
 ```
 
 ### Drag — lift and settle
+
 ```
 Dragging: scale 1.02, boxShadow elevated, bg white
 Drop: spring back with overshoot
 ```
 
 ### Card hover — subtle glow
+
 ```css
 transition: box-shadow 0.2s ease;
 &:hover { box-shadow: 0 4px 16px ${accent}10; }
@@ -925,6 +975,7 @@ CREATE INDEX idx_tasks_notion ON tasks(notion_page_id);
 ### API Routes
 
 #### GET `/api/notion/sync`
+
 - Queries Notion database for all tasks where `Done` is unchecked OR `Done At` is within last 7 days
 - For each Notion page:
   - If `Dashboard ID` exists → update existing Supabase task with Notion changes
@@ -932,6 +983,7 @@ CREATE INDEX idx_tasks_notion ON tasks(notion_page_id);
 - Returns `{ synced: number, created: number, updated: number }`
 
 #### POST `/api/notion/push`
+
 - Called when a task is created, updated, or completed in the dashboard
 - If task has `notion_page_id` → update the existing Notion page
 - If task has no `notion_page_id` and was created in dashboard → create new Notion page, store `notion_page_id` on the task
@@ -946,30 +998,36 @@ async function pullFromNotion() {
     database_id: NOTION_DATABASE_ID,
     filter: {
       or: [
-        { property: 'Done', checkbox: { equals: false } },
-        { property: 'Done At', date: { past_week: {} } },
-      ]
-    }
+        { property: "Done", checkbox: { equals: false } },
+        { property: "Done At", date: { past_week: {} } },
+      ],
+    },
   });
 
   for (const page of notionPages.results) {
-    const dashboardId = getProperty(page, 'Dashboard ID');
+    const dashboardId = getProperty(page, "Dashboard ID");
     const taskData = mapNotionToTask(page);
 
     if (dashboardId) {
       // Update existing task (Notion wins on conflict for title/note/priority)
-      await supabase.from('tasks').update(taskData).eq('id', dashboardId);
+      await supabase.from("tasks").update(taskData).eq("id", dashboardId);
     } else {
       // New task from Notion
-      const { data } = await supabase.from('tasks').insert({
-        ...taskData,
-        notion_page_id: page.id
-      }).select().single();
+      const { data } = await supabase
+        .from("tasks")
+        .insert({
+          ...taskData,
+          notion_page_id: page.id,
+        })
+        .select()
+        .single();
 
       // Write Dashboard ID back to Notion
       await notion.pages.update({
         page_id: page.id,
-        properties: { 'Dashboard ID': { rich_text: [{ text: { content: data.id } }] } }
+        properties: {
+          "Dashboard ID": { rich_text: [{ text: { content: data.id } }] },
+        },
       });
     }
   }
@@ -983,7 +1041,7 @@ async function pushToNotion(task: Task) {
     // Update existing Notion page
     await notion.pages.update({
       page_id: task.notion_page_id,
-      properties: notionProps
+      properties: notionProps,
     });
   } else {
     // Create new Notion page
@@ -991,14 +1049,15 @@ async function pushToNotion(task: Task) {
       parent: { database_id: NOTION_DATABASE_ID },
       properties: {
         ...notionProps,
-        'Dashboard ID': { rich_text: [{ text: { content: task.id } }] },
-        'Source': { select: { name: 'Dashboard' } }
-      }
+        "Dashboard ID": { rich_text: [{ text: { content: task.id } }] },
+        Source: { select: { name: "Dashboard" } },
+      },
     });
     // Store Notion page ID on task
-    await supabase.from('tasks')
+    await supabase
+      .from("tasks")
       .update({ notion_page_id: page.id })
-      .eq('id', task.id);
+      .eq("id", task.id);
   }
 }
 ```
@@ -1143,17 +1202,17 @@ Phase 7 — Polish
 
 ## Quick Reference Card
 
-| Feature | Behavior |
-|---|---|
-| Check task | Checkbox ONLY → strikethrough + dim + sink to bottom |
-| Click task | Opens right detail panel |
-| Drag task | Reorder priority within card |
-| Drag card | Reorder bento cards |
+| Feature         | Behavior                                                  |
+| --------------- | --------------------------------------------------------- |
+| Check task      | Checkbox ONLY → strikethrough + dim + sink to bottom      |
+| Click task      | Opens right detail panel                                  |
+| Drag task       | Reorder priority within card                              |
+| Drag card       | Reorder bento cards                                       |
 | Calendar events | Auto-pulled from Google Calendar, categorized by keywords |
-| Notion sync | Two-way: pull on load + every 5min, push on every change |
-| Source icons | 📅 Calendar · **N** Notion · (none) Manual |
-| Empty card | Shows `[+ Add task]` button only |
-| Run tracking | km logged per task, ring shows weekly total |
-| Gym tracking | Sessions X/3, ring shows progress |
-| Weather | Small widget inside AI summary card |
-| Background | Luma-style flat cool gray `#F2F3F5` |
+| Notion sync     | Two-way: pull on load + every 5min, push on every change  |
+| Source icons    | 📅 Calendar · **N** Notion · (none) Manual                |
+| Empty card      | Shows `[+ Add task]` button only                          |
+| Run tracking    | km logged per task, ring shows weekly total               |
+| Gym tracking    | Sessions X/3, ring shows progress                         |
+| Weather         | Small widget inside AI summary card                       |
+| Background      | Luma-style flat cool gray `#F2F3F5`                       |
